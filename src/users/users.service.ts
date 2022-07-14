@@ -18,8 +18,8 @@ export default class UsersService {
     }
 
     throw new HttpException(
-      'User with email: ${email} does not exist.',
-      HttpStatus.NOT_FOUND,
+      `Wrong credentials provided`,
+      HttpStatus.BAD_REQUEST,
     );
   }
 
