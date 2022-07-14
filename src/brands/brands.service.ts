@@ -1,18 +1,23 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import Brand from './brand.interface';
 import BrandDto from './brand.dto';
+import Brand from './brand.entity';
+import IBrand from './brand.interface';
 
 @Injectable()
 export default class BrandsService {
-  private brands: Brand[] = [];
+  constructor(
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+  ) {}
 
   getAllBrands() {
-    return this.brands;
+    return this.brandRepository.find();
   }
 
-  getBrandById(id: string) {
-    const brand = this.brands.find((brand) => brand.id === id);
+  async getBrandById(id: string) {
+    const brand = await this.brandRepository.findOneBy({ id: id });
 
     if (brand) {
       return brand;
@@ -24,13 +29,14 @@ export default class BrandsService {
     );
   }
 
-  updateBrand(id: string, brand: BrandDto) {
-    const brandIndex = this.brands.findIndex((brand) => brand.id === id);
+  async updateBrand(id: string, brand: BrandDto) {
+    const brandFromDb = await this.brandRepository.findOneBy({ id: id });
 
-    if (brandIndex >= 0) {
-      this.brands[brandIndex].name = brand.name;
+    if (brandFromDb) {
+      brandFromDb.name = brand.name;
+      await this.brandRepository.update(id, brandFromDb);
 
-      return this.brands[brandIndex];
+      return brandFromDb;
     }
 
     throw new HttpException(
@@ -39,29 +45,31 @@ export default class BrandsService {
     );
   }
 
-  createBrand(brand: BrandDto) {
-    const newBrand: Brand = {
-      id: Date.now().toString(),
-      name: brand.name,
-    };
+  async createBrand(brand: BrandDto) {
+    const newBrand = this.brandRepository.create(brand);
 
-    this.brands.push(newBrand);
+    try {
+      await this.brandRepository.save(newBrand);
+    } catch (error) {
+      if (error.errno === 19) {
+        throw new HttpException(
+          `Brand with name: ${brand.name} already exists.`,
+          HttpStatus.CONFLICT,
+        );
+      }
+    }
 
     return newBrand;
   }
 
-  deleteBrand(id: string) {
-    const brandIndex = this.brands.findIndex((brand) => brand.id === id);
+  async deleteBrand(id: string) {
+    const deleteResponse = await this.brandRepository.delete(id);
 
-    if (brandIndex >= 0) {
-      this.brands.splice(brandIndex, 1);
-
-      return;
+    if (!deleteResponse.affected) {
+      throw new HttpException(
+        `Brand with id ${id} not found.`,
+        HttpStatus.NOT_FOUND,
+      );
     }
-
-    throw new HttpException(
-      `Brand with id ${id} not found.`,
-      HttpStatus.NOT_FOUND,
-    );
   }
 }

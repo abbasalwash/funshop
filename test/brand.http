@@ -3,7 +3,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:3000/brands/1657808959420
+GET http://localhost:3000/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
 Accept: application/json
 
 ###
@@ -18,7 +18,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3000/brands/1657809496870
+PUT http://localhost:3000/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
 Accept: application/json
 Content-Type: application/json
 
@@ -28,5 +28,5 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/brands/1657809573843
+DELETE http://localhost:3000/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
 Accept: application/json

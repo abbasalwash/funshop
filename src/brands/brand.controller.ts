@@ -16,27 +16,27 @@ export default class BrandsController {
   constructor(private readonly brandService: BrandsService) {}
 
   @Get()
-  getAllBrands() {
-    return this.brandService.getAllBrands();
+  async getAllBrands() {
+    return await this.brandService.getAllBrands();
   }
 
   @Get(':id')
-  getBrandById(@Param('id') id: string) {
-    return this.brandService.getBrandById(id);
+  async getBrandById(@Param('id') id: string) {
+    return await this.brandService.getBrandById(id);
   }
 
   @Post()
-  createBrand(@Body() brand: BrandDto) {
-    return this.brandService.createBrand(brand);
+  async createBrand(@Body() brand: BrandDto) {
+    return await this.brandService.createBrand(brand);
   }
 
   @Put(':id')
-  updateBrand(@Param('id') id: string, @Body() brand: BrandDto) {
-    return this.brandService.updateBrand(id, brand);
+  async updateBrand(@Param('id') id: string, @Body() brand: BrandDto) {
+    return await this.brandService.updateBrand(id, brand);
   }
 
   @Delete(':id')
-  deleteBrand(@Param('id') id: string) {
-    return this.brandService.deleteBrand(id);
+  async deleteBrand(@Param('id') id: string) {
+    return await this.brandService.deleteBrand(id);
   }
 }
