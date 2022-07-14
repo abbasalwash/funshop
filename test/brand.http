@@ -1,0 +1,32 @@
+GET http://localhost:3000/brands
+Accept: application/json
+
+###
+
+GET http://localhost:3000/brands/1657808959420
+Accept: application/json
+
+###
+
+POST http://localhost:3000/brands
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Apple"
+}
+
+###
+
+PUT http://localhost:3000/brands/1657809496870
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Samsung"
+}
+
+###
+
+DELETE http://localhost:3000/brands/1657809573843
+Accept: application/json
