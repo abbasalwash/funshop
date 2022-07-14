@@ -1,5 +1,5 @@
 import Brand from './brand.entity';
-import BrandsController from './brand.controller';
+import BrandsController from './brands.controller';
 import BrandsService from './brands.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,4 +9,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [BrandsController],
   providers: [BrandsService],
 })
-export default class BrandModule {}
+export default class BrandsModule {}
