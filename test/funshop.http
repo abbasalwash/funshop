@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+@accessToken = {{login.response.body.accessToken}}
+
+# @name login
+POST {{baseUrl}}/authentication/signin
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+
+{
+    "email": "james@bond.com",
+    "password": "strongpassword"
+}
+
+###
+
+POST {{baseUrl}}/authentication/signup
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+
+{
+    "email": "james@bond.com",
+    "firstName": "James",
+    "lastName": "Bond",
+    "password": "strongpassword"
+}
+
+###
+
+GET {{baseUrl}}/brands
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+###
+
+POST {{baseUrl}}/brands
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+{
+    "name": "Apple"
+}
+
+###
+
+PUT {{baseUrl}}/brands/74697286-acbb-4572-b0f6-c90c5464b912
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+{
+    "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae lectus dictum, dictum enim sit amet, lacinia nibh. Aliquam semper nec dolor vel lobortis. Nunc eu elit sollicitudin, bibendum metus non, rutrum mi. Nullam dictum at odio sed condimentum. Aliquam erat volutpat. Fusce vel tellus ac erat mattis pellentesque eu."
+}
+
+###
+
+DELETE {{baseUrl}}/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}

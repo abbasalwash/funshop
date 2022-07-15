@@ -7,7 +7,7 @@ import User from 'src/users/user.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'funshop.db',
+      database: 'funshop-sqlite.db',
       entities: [Brand, User],
       synchronize: true,
     }),
