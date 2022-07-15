@@ -6,12 +6,15 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import BrandDto from './brand.dto';
 
 import BrandsService from './brands.service';
 
 @Controller('brands')
+@UseGuards(AuthGuard())
 export default class BrandsController {
   constructor(private readonly brandService: BrandsService) {}
 

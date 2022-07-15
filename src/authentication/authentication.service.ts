@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import AuthenticationDto from './authentication.dto';
+import JwtPayload from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import User from 'src/users/user.entity';
 import UserDto from 'src/users/user.dto';
@@ -26,13 +27,13 @@ export default class AuthenticationService {
     const user = await this.usersService.getUser(authenticationDto.email);
 
     if (user && (await this.verifyPassword(authenticationDto, user))) {
-      const payload = { email: user.email };
+      const payload: JwtPayload = { email: user.email };
       const accessToken = this.jwtService.sign(payload);
 
       return { accessToken };
     }
 
-    throw new UnauthorizedException('You credentials are not correct');
+    throw new UnauthorizedException('You credentials are not correct.');
   }
 
   private async verifyPassword(
