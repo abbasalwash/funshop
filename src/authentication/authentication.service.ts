@@ -3,13 +3,17 @@ import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import AuthenticationDto from './authentication.dto';
+import { JwtService } from '@nestjs/jwt';
 import User from 'src/users/user.entity';
 import UserDto from 'src/users/user.dto';
 import UsersService from 'src/users/users.service';
 
 @Injectable()
 export default class AuthenticationService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async signUp(user: UserDto) {
     const salt = await bcrypt.genSalt();
@@ -22,7 +26,10 @@ export default class AuthenticationService {
     const user = await this.usersService.getUser(authenticationDto.email);
 
     if (user && (await this.verifyPassword(authenticationDto, user))) {
-      return 'success';
+      const payload = { email: user.email };
+      const accessToken = this.jwtService.sign(payload);
+
+      return { accessToken };
     }
 
     throw new UnauthorizedException('You credentials are not correct');
