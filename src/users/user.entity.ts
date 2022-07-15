@@ -5,15 +5,15 @@ export default class User {
   @PrimaryGeneratedColumn('uuid')
   public id?: number;
 
-  @Column({ unique: true, nullable: false, length: 50 })
+  @Column({ unique: true, nullable: false })
   public email: string;
 
-  @Column({ nullable: false, length: 25 })
+  @Column({ nullable: false })
   public firstName: string;
 
-  @Column({ nullable: false, length: 25 })
+  @Column({ nullable: false })
   public lastName: string;
 
-  @Column({ nullable: false, length: 100 })
+  @Column({ nullable: false })
   public password: string;
 }

@@ -1,8 +1,8 @@
-import { IsNotEmpty, Max } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 // TODO create validator
 export default class BrandDto {
   @IsNotEmpty()
-  @Max(50)
+  @MaxLength(50)
   name: string;
 }
