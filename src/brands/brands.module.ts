@@ -1,12 +1,13 @@
+import AuthenticationModule from 'src/authentication/authentication.module';
 import Brand from './brand.entity';
-import BrandsController from './brand.controller';
+import BrandsController from './brands.controller';
 import BrandsService from './brands.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Brand])],
+  imports: [TypeOrmModule.forFeature([Brand]), AuthenticationModule],
   controllers: [BrandsController],
   providers: [BrandsService],
 })
-export default class BrandModule {}
+export default class BrandsModule {}

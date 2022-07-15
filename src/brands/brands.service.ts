@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SqliteErrorCode } from 'src/database/sqliteErrorCode';
 import { Repository } from 'typeorm';
 
 import BrandDto from './brand.dto';
 import Brand from './brand.entity';
-import IBrand from './brand.interface';
 
 @Injectable()
 export default class BrandsService {
   constructor(
-    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+    @InjectRepository(Brand)
+    private readonly brandRepository: Repository<Brand>,
   ) {}
 
   getAllBrands() {
@@ -51,7 +52,7 @@ export default class BrandsService {
     try {
       await this.brandRepository.save(newBrand);
     } catch (error) {
-      if (error.errno === 19) {
+      if (error?.errno === SqliteErrorCode.UniqueViolation) {
         throw new HttpException(
           `Brand with name: ${brand.name} already exists.`,
           HttpStatus.CONFLICT,
