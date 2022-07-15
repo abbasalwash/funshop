@@ -1,33 +1,19 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import UserDto from 'src/users/user.dto';
+import AuthenticationDto from './authentication.dto';
 import AuthenticationService from './authentication.service';
-import RegisterDto from './dto/register.dto';
-import { LocalAuthenticationGuard } from './localAuthentication.guard';
-import RequestWithUser from './requestWithUser.interface';
 
 @Controller('authentication')
 export default class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @Post('register')
-  async register(@Body() registerData: RegisterDto) {
-    return this.authenticationService.register(registerData);
+  @Post('signup')
+  async signUp(@Body() user: UserDto) {
+    return this.authenticationService.signUp(user);
   }
 
-  @HttpCode(200)
-  @UseGuards(LocalAuthenticationGuard)
-  @Post('login')
-  async login(@Req() request: RequestWithUser) {
-    // TODO code smell, should be solved cleaner
-    const user = request.user;
-    user.password = '';
-
-    return user;
+  @Post('signin')
+  async signIn(@Body() authenticationDto: AuthenticationDto) {
+    return this.authenticationService.signin(authenticationDto);
   }
 }

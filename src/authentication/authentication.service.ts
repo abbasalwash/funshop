@@ -1,54 +1,37 @@
 import * as bcrypt from 'bcrypt';
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import RegisterDto from './dto/register.dto';
-import { SqliteErrorCode } from 'src/database/sqliteErrorCode';
+import AuthenticationDto from './authentication.dto';
+import User from 'src/users/user.entity';
+import UserDto from 'src/users/user.dto';
 import UsersService from 'src/users/users.service';
 
 @Injectable()
 export default class AuthenticationService {
   constructor(private readonly usersService: UsersService) {}
 
-  async register(registerData: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registerData.password, 10);
-
-    try {
-      const createdUser = await this.usersService.createUser({
-        ...registerData,
-        password: hashedPassword,
-      });
-      // TODO code smell, should be solved cleaner
-      createdUser.password = '';
-
-      return createdUser;
-    } catch (error) {
-      if (error?.errno === SqliteErrorCode.UniqueViolation) {
-        throw new HttpException(
-          `User with email: ${registerData.email} already exists.`,
-          HttpStatus.CONFLICT,
-        );
-      }
-    }
+  async signUp(user: UserDto) {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(user.password, salt);
+    user.password = hashedPassword;
+    return this.usersService.createUser(user);
   }
 
-  async getAuthenticatedUser(email: string, nonHashedPassword: string) {
-    const user = await this.usersService.getByEmail(email);
-    await this.verifyPassword(nonHashedPassword, user.password);
-    // TODO code smell, should be solved cleaner
-    user.password;
+  async signin(authenticationDto: AuthenticationDto) {
+    const user = await this.usersService.getUser(authenticationDto.email);
 
-    return user;
+    if (user && (await this.verifyPassword(authenticationDto, user))) {
+      return 'success';
+    }
+
+    throw new UnauthorizedException('You credentials are not correct');
   }
 
-  private async verifyPassword(password: string, hashedPassword: string) {
-    const isPasswordMatching = await bcrypt.compare(password, hashedPassword);
-
-    if (!isPasswordMatching) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  private async verifyPassword(
+    authenticationDto: AuthenticationDto,
+    user: User,
+  ) {
+    return await bcrypt.compare(authenticationDto.password, user.password);
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SqliteErrorCode } from 'src/database/sqliteErrorCode';
 import { Repository } from 'typeorm';
 import UserDto from './user.dto';
 import User from './user.entity';
@@ -10,23 +11,21 @@ export default class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getByEmail(email: string) {
-    const user = await this.usersRepository.findOneBy({ email });
-
-    if (user) {
-      return user;
+  async createUser(user: UserDto) {
+    try {
+      const newUser = this.usersRepository.create(user);
+      await this.usersRepository.save(newUser);
+    } catch (error) {
+      if (error?.errno === SqliteErrorCode.UniqueViolation) {
+        throw new HttpException(
+          `Email with name: ${user.email} already exists.`,
+          HttpStatus.CONFLICT,
+        );
+      }
     }
-
-    throw new HttpException(
-      `Wrong credentials provided`,
-      HttpStatus.BAD_REQUEST,
-    );
   }
 
-  async createUser(user: UserDto) {
-    const newUser = this.usersRepository.create(user);
-    await this.usersRepository.save(newUser);
-
-    return newUser;
+  async getUser(email: string) {
+    return await this.usersRepository.findOneBy({ email });
   }
 }
