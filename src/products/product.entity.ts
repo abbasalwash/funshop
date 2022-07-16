@@ -7,10 +7,10 @@ export default class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: false, length: 100 })
   type: string;
 
-  @Column()
+  @Column({ nullable: false, type: 'decimal' })
   price: number;
 
   @ManyToOne(() => Brand, (brand) => brand.products)

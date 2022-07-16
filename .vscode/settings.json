@@ -3,6 +3,7 @@
         "Alwash",
         "nestjs",
         "signin",
+        "smallmoney",
         "typeorm"
     ]
 }

@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SqliteErrorCode } from 'src/database/sqliteErrorCode';
 import { Repository } from 'typeorm';
 
 import BrandDto from './brand.dto';
@@ -10,15 +9,15 @@ import Brand from './brand.entity';
 export default class BrandsService {
   constructor(
     @InjectRepository(Brand)
-    private readonly brandRepository: Repository<Brand>,
+    private readonly brandsRepository: Repository<Brand>,
   ) {}
 
-  getAllBrands() {
-    return this.brandRepository.find();
+  async getAllBrands() {
+    return await this.brandsRepository.find();
   }
 
   async getBrandById(id: string) {
-    const brand = await this.brandRepository.findOneBy({ id: id });
+    const brand = await this.brandsRepository.findOneBy({ id });
 
     if (brand) {
       return brand;
@@ -31,28 +30,24 @@ export default class BrandsService {
   }
 
   async updateBrand(id: string, brand: BrandDto) {
-    const brandFromDb = await this.brandRepository.findOneBy({ id: id });
+    const brandFromDb = await this.getBrandById(id);
 
     if (brandFromDb) {
       brandFromDb.name = brand.name;
-      await this.brandRepository.update(id, brandFromDb);
+      await this.brandsRepository.update(id, brandFromDb);
 
       return brandFromDb;
     }
-
-    throw new HttpException(
-      `Brand with id ${id} not found.`,
-      HttpStatus.NOT_FOUND,
-    );
   }
 
   async createBrand(brand: BrandDto) {
-    const newBrand = this.brandRepository.create(brand);
+    const newBrand = this.brandsRepository.create(brand);
 
     try {
-      await this.brandRepository.save(newBrand);
+      await this.brandsRepository.save(newBrand);
     } catch (error) {
-      if (error?.errno === SqliteErrorCode.UniqueViolation) {
+      const errorMessage = error.toString();
+      if (errorMessage.indexOf('UNIQUE') > -1) {
         throw new HttpException(
           `Brand with name: ${brand.name} already exists.`,
           HttpStatus.CONFLICT,
@@ -64,13 +59,24 @@ export default class BrandsService {
   }
 
   async deleteBrand(id: string) {
-    const deleteResponse = await this.brandRepository.delete(id);
+    try {
+      const deleteResult = await this.brandsRepository.delete(id);
 
-    if (!deleteResponse.affected) {
-      throw new HttpException(
-        `Brand with id ${id} not found.`,
-        HttpStatus.NOT_FOUND,
-      );
+      if (!deleteResult.affected) {
+        throw new HttpException(
+          `Brand with id ${id} not found.`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      const errorMessage = error.toString();
+      if (errorMessage.indexOf('FOREIGN KEY') > -1) {
+        throw new HttpException(
+          `Brand with id ${id} has relation with product and can not be removed.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 }

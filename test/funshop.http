@@ -56,11 +56,55 @@ Content-Type: {{contentType}}
 Authorization: bearer {{accessToken}}
 
 {
-    "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae lectus dictum, dictum enim sit amet, lacinia nibh. Aliquam semper nec dolor vel lobortis. Nunc eu elit sollicitudin, bibendum metus non, rutrum mi. Nullam dictum at odio sed condimentum. Aliquam erat volutpat. Fusce vel tellus ac erat mattis pellentesque eu."
+    "name": "Samsung"
 }
 
 ###
 
-DELETE {{baseUrl}}/brands/04d3349d-9b05-43ec-8872-ebae59dd52c9
+DELETE {{baseUrl}}/brands/e4d7b355-b093-4074-bc9b-e2f55a4582c3
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/products
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/products/50553922-8cd3-4bdb-956d-2c08104204cf
+Accept: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+###
+
+POST {{baseUrl}}/products
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+{
+    "type": "MacBook Pro",
+    "price": 1199.126,
+    "brandId": "1e250133-00cc-425d-a47d-346a6c004e69"
+}
+
+###
+
+PUT {{baseUrl}}/products/5296baa1-0ab5-4757-b3a1-6e3f33cdde90
+Accept: {{contentType}}
+Content-Type: {{contentType}}
+Authorization: bearer {{accessToken}}
+
+{
+    "type": "MacBook Pro",
+    "price": 1199.99,
+    "brandId": "e4d7b355-b093-4074-bc9b-e2f55a4582c3"
+}
+
+###
+
+DELETE {{baseUrl}}/products/8a437cfa-5efb-4f94-8357-449c71c5a591
 Accept: {{contentType}}
 Authorization: bearer {{accessToken}}
