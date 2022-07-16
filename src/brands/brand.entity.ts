@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import Product from 'src/products/product.entity';
 
 @Entity()
 export default class Brand {
@@ -7,4 +9,7 @@ export default class Brand {
 
   @Column({ unique: true, nullable: false })
   public name: string;
+
+  @OneToMany(() => Product, (product) => product.brand)
+  products: Product[];
 }
