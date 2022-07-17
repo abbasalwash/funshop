@@ -1,6 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SqliteErrorCode } from 'src/database/sqliteErrorCode';
 import { Repository } from 'typeorm';
 import UserDto from './user.dto';
 import User from './user.entity';
@@ -16,7 +15,8 @@ export default class UsersService {
       const newUser = this.usersRepository.create(user);
       await this.usersRepository.save(newUser);
     } catch (error) {
-      if (error?.errno === SqliteErrorCode.UniqueViolation) {
+      const errorMessage = error.toString();
+      if (errorMessage.indexOf('UNIQUE') > -1) {
         throw new HttpException(
           `Email with name: ${user.email} already exists.`,
           HttpStatus.CONFLICT,

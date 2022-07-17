@@ -4,15 +4,15 @@ import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 export default class UserDto {
   @IsNotEmpty()
   @IsEmail()
-  @MaxLength(30)
+  @MaxLength(40)
   email: string;
 
   @IsNotEmpty()
-  @MaxLength(30)
+  @MaxLength(25)
   firstName: string;
 
   @IsNotEmpty()
-  @MaxLength(30)
+  @MaxLength(25)
   lastName: string;
 
   @IsNotEmpty()

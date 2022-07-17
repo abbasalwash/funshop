@@ -16,30 +16,30 @@ import BrandsService from './brands.service';
 @Controller('brands')
 @UseGuards(AuthGuard())
 export default class BrandsController {
-  constructor(private readonly brandService: BrandsService) {}
+  constructor(private readonly brandsService: BrandsService) {}
 
   @Get()
   async getAllBrands() {
-    return await this.brandService.getAllBrands();
+    return await this.brandsService.getAllBrands();
   }
 
   @Get(':id')
   async getBrandById(@Param('id') id: string) {
-    return await this.brandService.getBrandById(id);
+    return await this.brandsService.getBrandById(id);
   }
 
   @Post()
   async createBrand(@Body() brand: BrandDto) {
-    return await this.brandService.createBrand(brand);
+    return await this.brandsService.createBrand(brand);
   }
 
   @Put(':id')
   async updateBrand(@Param('id') id: string, @Body() brand: BrandDto) {
-    return await this.brandService.updateBrand(id, brand);
+    return await this.brandsService.updateBrand(id, brand);
   }
 
   @Delete(':id')
   async deleteBrand(@Param('id') id: string) {
-    return await this.brandService.deleteBrand(id);
+    return await this.brandsService.deleteBrand(id);
   }
 }
