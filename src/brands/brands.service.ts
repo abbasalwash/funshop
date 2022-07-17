@@ -69,7 +69,6 @@ export default class BrandsService {
         );
       }
     } catch (error) {
-      console.log(error);
       const errorMessage = error.toString();
       if (errorMessage.indexOf('FOREIGN KEY') > -1) {
         throw new HttpException(
